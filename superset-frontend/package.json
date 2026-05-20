@@ -328,7 +328,7 @@
     "storybook": "8.1.11",
     "style-loader": "^4.0.0",
     "thread-loader": "^4.0.4",
-    "ts-jest": "^29.4.0",
+    "ts-jest": "^29.4.10",
     "ts-loader": "^9.5.1",
     "tscw-config": "^1.1.2",
     "tsx": "^4.19.2",
