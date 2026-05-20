@@ -275,6 +275,33 @@ export const exportChart = ({
   SupersetClient.postForm(url, { form_data: safeStringify(payload) });
 };
 
+
+export const buildDashboardExportPayload = ({
+  queries,
+  force = false,
+  resultFormat = 'xlsx',
+  resultType = 'full',
+}) => {
+  // The API expects { queries: [{ form_data: {...} }] }
+  return {
+    queries: queries.map(chartQuery => {
+      // Build the query context the same way as individual chart exports
+      //const queryContext = 
+      return buildV1ChartDataPayload({
+        formData: chartQuery.formData,
+        force,
+        resultFormat,
+        resultType,
+        ownState: chartQuery.ownState || {},
+      });
+
+      // return {
+      //   queryContext
+      // };
+    })
+  };
+};
+
 export const exploreChart = (formData, requestParams) => {
   const url = getExploreUrl({
     formData,

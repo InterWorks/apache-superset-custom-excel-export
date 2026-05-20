@@ -23,6 +23,7 @@ import DownloadMenuItems from '.';
 const createProps = () => ({
   pdfMenuItemTitle: 'Export to PDF',
   imageMenuItemTitle: 'Download as Image',
+  chartMenuItemTitle: 'Download Dashboard To Excel Template',
   dashboardTitle: 'Test Dashboard',
   logEvent: jest.fn(),
   dashboardId: 123,
@@ -45,4 +46,5 @@ test('Should render menu items', () => {
   renderComponent();
   expect(screen.getByText('Export to PDF')).toBeInTheDocument();
   expect(screen.getByText('Download as Image')).toBeInTheDocument();
+  expect(screen.getByText('Download Dashboard To Excel Template')).toBeInTheDocument();
 });

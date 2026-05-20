@@ -25,3 +25,5 @@ recursive-include superset/templates *
 recursive-include superset/translations *
 recursive-include superset/static *
 recursive-exclude tests *
+
+global-exclude __pycache__ *.py[cod]

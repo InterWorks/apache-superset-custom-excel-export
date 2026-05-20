@@ -390,8 +390,16 @@ class ExtraCache:
         """
         # pylint: disable=import-outside-toplevel
         from superset.views.utils import get_form_data
-
-        form_data, _ = get_form_data()
+        # First try to get form_data from Flask global if it's a dashboard export
+        # This is necessary because dashboard exports set filters per-chart
+        from flask import g, has_request_context
+        
+        form_data = {}
+        if has_request_context() and hasattr(g, 'form_data') and g.form_data:
+            form_data = g.form_data
+        else:
+            # Fall back to normal get_form_data for single chart exports
+            form_data, _ = get_form_data()
         convert_legacy_filters_into_adhoc(form_data)
         merge_extra_filters(form_data)
 
@@ -461,8 +469,12 @@ class ExtraCache:
         """
         # pylint: disable=import-outside-toplevel
         from superset.views.utils import get_form_data
-
-        form_data, _ = get_form_data()
+        from flask import g, has_request_context
+        # Check g.form_data first for dashboard export context
+        if has_request_context() and hasattr(g, 'form_data') and g.form_data:
+            form_data = g.form_data
+        else:
+            form_data, _ = get_form_data()
         convert_legacy_filters_into_adhoc(form_data)
         merge_extra_filters(form_data)
         time_range = form_data.get("time_range")

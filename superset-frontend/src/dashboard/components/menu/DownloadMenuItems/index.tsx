@@ -23,11 +23,13 @@ import { ComponentProps } from 'react';
 import { DownloadScreenshotFormat } from './types';
 import DownloadAsPdf from './DownloadAsPdf';
 import DownloadAsImage from './DownloadAsImage';
+import DownloadAsExcel from './DownloadAsExcel';
 
 export interface DownloadMenuItemProps
   extends ComponentProps<typeof Menu.SubMenu> {
   pdfMenuItemTitle: string;
   imageMenuItemTitle: string;
+  chartMenuItemTitle: string;
   dashboardTitle: string;
   logEvent?: Function;
   dashboardId: number;
@@ -40,6 +42,7 @@ const DownloadMenuItems = (props: DownloadMenuItemProps) => {
   const {
     pdfMenuItemTitle,
     imageMenuItemTitle,
+    chartMenuItemTitle,
     logEvent,
     dashboardId,
     dashboardTitle,
@@ -68,6 +71,12 @@ const DownloadMenuItems = (props: DownloadMenuItemProps) => {
       >
         {imageMenuItemTitle}
       </Menu.Item>
+      <DownloadAsExcel
+          text="Download Dashboard To Excel Template"
+          dashboardTitle={dashboardTitle}
+          logEvent={logEvent}
+          useTemplate={false}
+        />
     </Menu.SubMenu>
   ) : (
     <Menu.SubMenu key={submenuKey} title={title} disabled={disabled} {...rest}>
@@ -81,6 +90,12 @@ const DownloadMenuItems = (props: DownloadMenuItemProps) => {
         dashboardTitle={dashboardTitle}
         logEvent={logEvent}
       />
+        <DownloadAsExcel
+          text="Download Dashboard To Excel Template"
+          dashboardTitle={dashboardTitle}
+          logEvent={logEvent}
+          useTemplate={false}
+        />
     </Menu.SubMenu>
   );
 };

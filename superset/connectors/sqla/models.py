@@ -59,6 +59,7 @@ from sqlalchemy.orm import (
     relationship,
     RelationshipProperty,
 )
+from sqlalchemy.orm.exc import DetachedInstanceError
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.sql import column, ColumnElement, literal_column, table
@@ -255,11 +256,17 @@ class BaseDatasource(AuditMixinNullable, ImportExportMixin):  # pylint: disable=
 
     @property
     def column_names(self) -> list[str]:
-        return sorted([c.column_name for c in self.columns], key=lambda x: x or "")
+        try:
+            return sorted([c.column_name for c in self.columns], key=lambda x: x or "")
+        except DetachedInstanceError:
+            return []
 
     @property
     def columns_types(self) -> dict[str, str]:
-        return {c.column_name: c.type for c in self.columns}
+        try:
+            return {c.column_name: c.type for c in self.columns}
+        except DetachedInstanceError:
+            return {}
 
     @property
     def main_dttm_col(self) -> str:
@@ -286,7 +293,10 @@ class BaseDatasource(AuditMixinNullable, ImportExportMixin):  # pylint: disable=
 
     @property
     def filterable_column_names(self) -> list[str]:
-        return sorted([c.column_name for c in self.columns if c.filterable])
+        try:
+            return sorted([c.column_name for c in self.columns if c.filterable])
+        except DetachedInstanceError:
+            return []
 
     @property
     def dttm_cols(self) -> list[str]:
@@ -302,9 +312,13 @@ class BaseDatasource(AuditMixinNullable, ImportExportMixin):  # pylint: disable=
             return self.default_endpoint
         return f"/explore/?datasource_type={self.type}&datasource_id={self.id}"
 
+
     @property
     def column_formats(self) -> dict[str, str | None]:
-        return {m.metric_name: m.d3format for m in self.metrics if m.d3format}
+        try:
+            return {m.metric_name: m.d3format for m in self.metrics if m.d3format}
+        except DetachedInstanceError:
+            return {}
 
     def add_missing_metrics(self, metrics: list[SqlMetric]) -> None:
         existing_metrics = {m.metric_name for m in self.metrics}
@@ -350,13 +364,21 @@ class BaseDatasource(AuditMixinNullable, ImportExportMixin):  # pylint: disable=
     def verbose_map(self) -> dict[str, str]:
         verb_map = {"__timestamp": "Time"}
 
-        for o in self.metrics:
-            if o.metric_name not in verb_map:
-                verb_map[o.metric_name] = o.verbose_name or o.metric_name
+        try:
+            for o in self.metrics:
+                if o.metric_name not in verb_map:
+                    verb_map[o.metric_name] = o.verbose_name or o.metric_name
+        except DetachedInstanceError:
+            # Instance is detached from session, skip metrics
+            pass
 
-        for o in self.columns:
-            if o.column_name not in verb_map:
-                verb_map[o.column_name] = o.verbose_name or o.column_name
+        try:
+            for o in self.columns:
+                if o.column_name not in verb_map:
+                    verb_map[o.column_name] = o.verbose_name or o.column_name
+        except DetachedInstanceError:
+            # Instance is detached from session, skip columns
+            pass
 
         return verb_map
 

@@ -233,6 +233,7 @@ export const useHeaderActionsMenu = ({
           title={t('Download')}
           pdfMenuItemTitle={t('Export to PDF')}
           imageMenuItemTitle={t('Download as Image')}
+          chartMenuItemTitle={t('Download all charts as Excel')}
           dashboardTitle={dashboardTitle}
           dashboardId={dashboardId}
           logEvent={logEvent}

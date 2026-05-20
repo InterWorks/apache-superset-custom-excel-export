@@ -20,14 +20,15 @@ requires = ["setuptools>=40.9.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "apache_superset"
-description = "A modern, enterprise-ready business intelligence web application"
+name = "apache_superset_custom_excel_export"
+description = "Fork of the popular Apache Superset project with custom export to excel functionality"
+version = "5.0.10"
 readme = "README.md"
-dynamic = ["version", "scripts", "entry-points"]
+dynamic = ["scripts", "entry-points"]
 requires-python = ">=3.10"
 license = { file="LICENSE.txt" }
 authors = [
-    { name = "Apache Software Foundation", email = "dev@superset.apache.org" },
+    { name = "Jason Lambert", email = "jason.lambert@interworks.co.uk" },
 ]
 classifiers = [
     "Programming Language :: Python :: 3.10",
@@ -54,6 +55,7 @@ dependencies = [
     "flask-migrate>=3.1.0, <4.0",
     "flask-session>=0.4.0, <1.0",
     "flask-wtf>=1.1.0, <2.0",
+    "flask-limiter==3.12",
     "geopy",
     "greenlet>=3.0.3, <=3.1.1",
     "gunicorn>=22.0.0; sys_platform != 'win32'",
@@ -69,7 +71,7 @@ dependencies = [
     "marshmallow>=3.0, <4",
     "msgpack>=1.0.0, <1.1",
     "nh3>=0.2.11, <0.3",
-    "numpy>1.23.5, <2.3",
+    "numpy>1.23.5, <2.0.0",
     "packaging",
     # --------------------------
     # pandas and related (wanting pandas[performance] without numba as it's 100+MB and not needed)
@@ -104,6 +106,10 @@ dependencies = [
     "wtforms-json",
     "xlsxwriter>=3.0.7, <3.1",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["superset*"]
 
 [project.optional-dependencies]
 
